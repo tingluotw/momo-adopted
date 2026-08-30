@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>momo與她的調皮蛋</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper: #F6E3CC;
+    --card: #FFF6EA;
+    --ink: #2B211B;
+    --ink-soft: #6B4F36;
+    --ochre: #E07B39;
+    --ochre-dark: #B85A1E;
+    --sage: #C9702B;
+    --tape: #F4C77A;
+    --rule: #E3C39C;
+    --danger-stamp: #9C4A22;
+    --blue-stamp: #A6631F;
+  }
+
+  *{ box-sizing: border-box; }
+
+  html,body{
+    margin:0; padding:0;
+    background: var(--paper);
+    background-image: radial-gradient(circle at 1px 1px, rgba(35,40,43,0.06) 1px, transparent 0);
+    background-size: 22px 22px;
+    color: var(--ink);
+    font-family: 'Work Sans', sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap{ max-width: 820px; margin: 0 auto; padding: 48px 20px 90px; }
+
+  .howto{
+    max-width: 820px; margin: 0 auto 22px;
+    padding: 14px 18px;
+    background: #fff9e8;
+    border: 1px dashed var(--ochre-dark);
+    border-radius: 6px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px; line-height: 1.8; color: var(--ink-soft);
+  }
+  .howto b{ color: var(--ink); }
+  @media print{ .howto{ display:none; } }
+
+  /* ---------- page header ---------- */
+  .page-head{ text-align:center; margin-bottom: 34px; }
+  .page-head .eyebrow{
+    font-family: 'IBM Plex Mono', monospace; font-size: 12px;
+    letter-spacing: 0.14em; text-transform: uppercase; color: var(--ochre-dark);
+    margin-bottom: 8px;
+  }
+  .page-head h1{
+    font-family: 'Fraunces', serif; font-weight: 700;
+    font-size: clamp(34px, 7vw, 50px); margin: 0 0 10px;
+  }
+  .page-head p{
+    font-family: 'Fraunces', serif; font-style: italic; font-size: 16px;
+    color: var(--ink-soft); max-width: 520px; margin: 0 auto;
+  }
+
+  .slider-arrow{
+    position:absolute; top:50%; transform: translateY(-50%);
+    width: 28px; height: 28px;
+    display:flex; align-items:center; justify-content:center;
+    background: rgba(255,246,234,0.9);
+    border: 1.5px solid var(--ink);
+    border-radius: 50%;
+    font-size: 15px; line-height:1; color: var(--ink);
+    cursor:pointer; z-index: 4;
+    font-family: 'IBM Plex Mono', monospace;
+  }
+  .slider-arrow:hover{ background:#fff; }
+  .slider-arrow.prev{ left: 8px; }
+  .slider-arrow.next{ right: 8px; }
+  .slider-arrow:focus-visible{ outline: 3px solid var(--ochre); outline-offset: 2px; }
+
+  .slider-dots{
+    position:absolute; bottom: 8px; left:0; right:0; z-index:4;
+    display:flex; justify-content:center; gap: 5px;
+  }
+  .slider-dots .dot{
+    width: 6px; height: 6px; border-radius: 50%;
+    background: rgba(255,255,255,0.7);
+    border: 1px solid var(--ink);
+  }
+  .slider-dots .dot.active{ background: var(--ochre-dark); }
+
+  .stamp{
+    display:inline-block; align-self:flex-start;
+    font-family:'IBM Plex Mono', monospace; font-size: 11.5px; font-weight:600;
+    letter-spacing: 0.06em; text-transform: uppercase;
+    border: 2px solid var(--sage); color: var(--sage);
+    border-radius: 3px; padding: 4px 10px; transform: rotate(-3deg);
+  }
+  .stamp.pending{ border-color: var(--blue-stamp); color: var(--blue-stamp); }
+  .stamp.adopted{ border-color: var(--danger-stamp); color: var(--danger-stamp); }
+
+  /* ---------- tabs ---------- */
+  .tabs{ display:none; }
+  .tab-btn{
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px; font-weight: 600; letter-spacing: 0.06em;
+    text-transform: uppercase;
+    background: transparent;
+    border: 1.5px solid var(--ink);
+    border-bottom: none;
+    border-radius: 6px 6px 0 0;
+    padding: 10px 22px;
+    color: var(--ink-soft);
+    cursor: pointer;
+    position: relative;
+    top: 1.5px;
+  }
+  .tab-btn.active{
+    background: var(--card);
+    color: var(--ink);
+  }
+  .tab-btn:not(.active):hover{ background: rgba(255,255,255,0.4); }
+  .tab-btn:focus-visible{ outline: 3px solid var(--ochre); outline-offset: 2px; }
+
+  .tab-panel{ display:block; }
+  #tab-notice{ margin-top: 34px; }
+
+  /* ---------- notice tab content ---------- */
+  .notice-card{
+    background: var(--card);
+    border: 1.5px solid var(--ink);
+    border-radius: 6px;
+    box-shadow: 5px 5px 0 rgba(35,40,43,0.10);
+    padding: 8px 28px 6px;
+    margin-bottom: 22px;
+  }
+  .notice-item{ padding: 20px 0; border-top: 1px dashed var(--rule); }
+  .notice-item:first-child{ border-top:none; }
+  .notice-item .eyebrow{
+    font-family: 'IBM Plex Mono', monospace; font-size: 11px;
+    letter-spacing: 0.14em; text-transform: uppercase; color: var(--ochre-dark);
+    margin-bottom: 8px;
+  }
+  .notice-item h3{
+    font-family: 'Fraunces', serif; font-weight: 600; font-size: 21px; margin: 0 0 8px;
+  }
+  .notice-item p{
+    font-size: 14.5px; line-height: 1.85; color: var(--ink-soft); margin: 0 0 8px;
+  }
+  .notice-item blockquote{
+    margin: 10px 0 0; padding: 10px 14px;
+    border-left: 3px solid var(--ochre);
+    background: rgba(224,123,57,0.08);
+    font-family: 'Fraunces', serif; font-style: italic; font-size: 13.5px;
+    color: var(--ink-soft); line-height: 1.8;
+  }
+  .section-title{
+    font-family: 'Fraunces', serif; font-weight: 700; font-size: 30px;
+    text-align: center; margin: 40px 0 18px;
+  }
+  .care-list{
+    margin: 8px 0 0; padding-left: 24px;
+    font-size: 14.5px; line-height: 1.85; color: var(--ink-soft);
+  }
+  .care-list li + li{ margin-top: 6px; }
+
+  /* ---------- big gallery (all 7 cats, one photo each) ---------- */
+  .gallery-wrap{
+    position: relative;
+    border: 1.5px solid var(--ink);
+    border-radius: 6px;
+    overflow: hidden;
+    box-shadow: 6px 6px 0 rgba(35,40,43,0.12);
+    margin-bottom: 0;
+  }
+  .gallery-slider{
+    display:flex;
+    aspect-ratio: 4/3;
+    overflow-x:auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    background: repeating-linear-gradient(135deg, #EAC79A, #EAC79A 10px, #F1D6AE 10px, #F1D6AE 20px);
+  }
+  .gallery-slider::-webkit-scrollbar{ display:none; }
+  .g-slide{
+    flex: 0 0 100%;
+    scroll-snap-align: start;
+    height: 100%;
+  }
+  .g-slide img{
+    width:100%; height:100%;
+    object-fit: cover;
+    display:block;
+  }
+  .g-slide:not(:first-child) img{
+    object-fit: contain;
+  }
+
+  .gallery-wrap .slider-arrow{ top:50%; }
+  .gallery-wrap .tag-no{
+    position:absolute; top:12px; left:12px; z-index:4;
+    font-family:'IBM Plex Mono', monospace; font-size: 11px;
+    color: var(--ochre-dark); background: rgba(255,246,234,0.92);
+    padding: 3px 9px; border-radius: 3px; letter-spacing:0.06em;
+  }
+  .gallery-wrap .slider-dots{ bottom: 12px; }
+  .gallery-wrap .slider-dots .dot{ width:7px; height:7px; }
+
+  /* info panel below the gallery, synced to current slide */
+  .cat-info{
+    background: var(--card);
+    border: 1.5px solid var(--ink);
+    border-top: none;
+    border-radius: 0 0 6px 6px;
+    padding: 22px 26px 26px;
+    margin-bottom: 34px;
+    box-shadow: 6px 6px 0 rgba(35,40,43,0.12);
+  }
+  .cat-info .name-line{
+    display:flex; align-items:baseline; gap: 12px; flex-wrap:wrap;
+    margin-bottom: 4px;
+  }
+  .cat-info h2{
+    font-family: 'Fraunces', serif; font-weight: 700; font-size: 28px; margin:0;
+  }
+  .cat-info .sub{
+    font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: var(--ink-soft);
+  }
+  .cat-info p{
+    font-size: 15px; line-height: 1.85; color: var(--ink-soft); margin: 8px 0 12px;
+  }
+  .cta{
+    text-align:center; margin-top: 40px;
+    background: var(--card); border: 1.5px solid var(--ink); border-radius: 6px;
+    padding: 30px 24px; box-shadow: 5px 5px 0 rgba(35,40,43,0.10);
+  }
+  .cta p.lead{
+    font-family: 'Fraunces', serif; font-style: italic; font-size: 17px;
+    color: var(--ink-soft); margin-bottom: 16px;
+  }
+  .btn{
+    display:inline-block; font-family: 'IBM Plex Mono', monospace;
+    letter-spacing: 0.06em; text-transform: uppercase; font-size: 13.5px; font-weight: 600;
+    color: #fff; background: var(--ink); border: none; padding: 14px 30px;
+    border-radius: 4px; text-decoration: none; transition: transform 0.15s ease, background 0.15s ease;
+  }
+  .btn:hover{ background: var(--ochre-dark); transform: translateY(-1px); }
+  .btn:focus-visible, a:focus-visible{ outline: 3px solid var(--ochre); outline-offset: 2px; }
+  .note{ font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--ink-soft); margin-top: 14px; }
+
+  footer{
+    text-align:center; font-family: 'IBM Plex Mono', monospace; font-size: 11.5px;
+    color: var(--ink-soft); margin-top: 26px; letter-spacing: 0.04em;
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <div class="howto">
+    <b>使用說明（正式上線前請刪除本區塊）：</b><br>
+    1. 現在是<b>一個大相簿</b>顯示七隻貓咪的照片（各用 main.JPEG），手機上用手指滑動、桌機點擊左右箭頭切換；下方小圓點標示目前第幾張。<br>
+    2. 滑到哪一張，<b>下方簡介卡片會自動換成對應貓咪的資料</b>（姓名、花色/性別/月齡、介紹文字、送養狀態），這是靠 <code>&lt;script&gt;</code> 裡的 <code>catData</code> 陣列驅動的，7 筆資料的順序要跟 <code>.g-slide</code> 圖片的順序一致。<br>
+    3. 圖片路徑已依你提供的檔名寫好（<code>images/momo_main.JPEG</code>、<code>images/cat1_main.JPEG</code>…以此類推），只要把檔案放進 <code>images</code> 子資料夾即可，不用再改路徑。<br>
+    4. 若要增減貓咪：同時要（a）在 <code>.gallery-slider</code> 內增減一個 <code>&lt;div class="g-slide"&gt;</code>、（b）在 <code>.slider-dots</code> 內增減一個 <code>&lt;span class="dot"&gt;&lt;/span&gt;</code>、（c）在 JS 的 <code>catData</code> 陣列裡對應增減一筆資料，三處必須同步，順序也要一致。<br>
+    5. 狀態標籤 <code>stampClass</code> 可填 <code>""</code>（送養中，預設樣式）／<code>"pending"</code>（面談中）／<code>"adopted"</code>（已認養）。<br>
+    6. 最下方 CTA 按鈕的 <code>href="#"</code> 請換成你的 Google 表單連結（共兩處，「七隻貓咪介紹」與「認養須知」頁籤底部各一個）。<br>
+    7. 上方「七隻貓咪介紹／認養須知」兩個頁籤切換邏輯已寫好，不需額外套件。
+  </div>
+
+  <div class="page-head">
+    <div class="eyebrow">認養檔案 · 一家七口</div>
+    <h1>momo與她的調皮蛋</h1>
+    <p>貓媽媽Momo，帶著六個孩子，一起在等一個願意好好陪伴他們的家。</p>
+  </div>
+
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('cats', this)">七隻貓咪介紹</button>
+    <button class="tab-btn" onclick="switchTab('notice', this)">認養須知</button>
+  </div>
+
+  <div id="tab-cats" class="tab-panel active">
+
+    <div class="gallery-wrap">
+      <span class="tag-no" id="gallery-no">NO. 0210</span>
+      <div class="gallery-slider" id="cat-gallery">
+        <div class="g-slide"><img src="images/momo_main.JPEG" alt="Momo"></div>
+        <div class="g-slide"><img src="images/cat1_main.JPEG" alt="小橘"></div>
+        <div class="g-slide"><img src="images/cat2_main.JPEG" alt="小藍"></div>
+        <div class="g-slide"><img src="images/cat3_main.JPEG" alt="小黃"></div>
+        <div class="g-slide"><img src="images/cat4_main.JPEG" alt="小綠"></div>
+        <div class="g-slide"><img src="images/cat5_main.JPEG" alt="小紫"></div>
+        <div class="g-slide"><img src="images/cat6_main.JPEG" alt="小紅"></div>
+      </div>
+      <button class="slider-arrow prev" onclick="slideGallery(-1)" aria-label="上一隻貓咪">‹</button>
+      <button class="slider-arrow next" onclick="slideGallery(1)" aria-label="下一隻貓咪">›</button>
+      <div class="slider-dots" id="gallery-dots">
+        <span class="dot active"></span>
+        <span class="dot"></span>
+        <span class="dot"></span>
+        <span class="dot"></span>
+        <span class="dot"></span>
+        <span class="dot"></span>
+        <span class="dot"></span>
+      </div>
+    </div>
+
+    <div class="cat-info">
+      <div class="name-line">
+        <h2 id="info-name">momo</h2>
+        <span class="sub" id="info-sub">耳朵有聰明毛的稀有貓咪</span>
+      </div>
+      <p id="info-desc">
+        以前生活在MTK草叢裡，愛吃，有時候話很多，相處久了就可以放下戒心被摸摸的貓咪，
+        一隻貓把六寶養得肥嘟嘟，超級厲害！
+      </p>
+      <span class="stamp" id="info-stamp">送養中</span>
+    </div>
+
+  </div><!-- /#tab-cats -->
+
+  <div id="tab-notice" class="tab-panel">
+
+    <div class="notice-card">
+
+      <div class="notice-item">
+        <div class="eyebrow">絕育觀念</div>
+        <h3>為什麼要幫貓咪絕育？</h3>
+        <p>
+          絕育能避免非計畫性繁殖，降低流浪貓數量失控與棄養壓力；也能大幅降低母貓乳腺腫瘤、
+          子宮蓄膿，以及公貓睪丸癌等疾病風險；同時減少噴尿標記、發情嚎叫等行為，讓同住品質更好。
+        </p>
+        <blockquote>
+          絕育手術的適合時間會依貓咪的年齡、體重與健康狀況而有所不同，請由獸醫進行完整評估後安排，
+          並依照醫囑做好術前準備與術後照護。認養尚未絕育的貓咪，也代表願意在適當時機完成這項健康責任。
+        </blockquote>
+      </div>
+
+      <div class="notice-item">
+        <div class="eyebrow">貓愛滋觀念</div>
+        <h3>認識貓免疫缺陷病毒（FIV）</h3>
+        <p>
+          貓愛滋病毒具有物種專一性，只會感染貓科動物，目前沒有證據顯示會感染人類，因此不會傳染給人。
+          貓之間主要透過激烈打架造成的深咬傷傳播，當帶有病毒的唾液進入另一隻貓的組織時才有較高風險；
+          和平相處、共用食水碗或互相理毛，並不是有效率的傳染途徑。
+        </p>
+        <blockquote>
+          FIV 會使貓咪的免疫力較弱，但無症狀期可能持續多年，部分貓咪甚至終生不會進展成嚴重疾病。
+          只要維持室內生活、提供均衡飲食、定期健康檢查，並在出現異常時及早就醫，FIV 貓仍可能擁有穩定且良好的生活品質。
+        </blockquote>
+      </div>
+
+      <div class="notice-item">
+        <div class="eyebrow">多貓家庭準備</div>
+        <h3>家裡已有貓咪，該如何介紹新成員？</h3>
+        <p>
+          新貓到家後，依照醫生建議，請先在備有食物、飲水、貓砂盆、躲藏處與休息空間的獨立房間安置至少一個月，
+          並先完成健康檢查。若出現打噴嚏、腹瀉、嘔吐、皮膚異常等症狀，應繼續隔離並諮詢獸醫。
+          實際進度不只看天數，更要依兩隻貓是否能保持放鬆來決定。
+        </p>
+        <ol class="care-list">
+          <li>先交換睡墊、毛巾或玩具，讓雙方在不見面的情況下熟悉彼此氣味。</li>
+          <li>在關閉的房門兩側餵食或給零食，讓對方的氣味與愉快經驗產生連結。</li>
+          <li>讓兩隻貓輪流探索彼此待過的空間，但暫時不要直接碰面。</li>
+          <li>雙方都放鬆後，再透過門縫、紗門或安全圍欄短暫見面，並獎勵平靜行為。</li>
+          <li>最後安排短時間、全程監督的同室相處，再逐步延長時間。</li>
+        </ol>
+        <blockquote>
+          不要強迫靠近，也不要因哈氣或低吼而責罵。若出現持續緊迫、追逐或攻擊，請退回前一個步驟，放慢幾天再嘗試；
+          整個磨合過程可能需要數天到數週，耐心比速度更重要。
+        </blockquote>
+      </div>
+
+      <div class="notice-item">
+        <div class="eyebrow">醫療費用觀念</div>
+        <h3>生病或意外時，你準備好了嗎？</h3>
+        <p>
+          貓咪生病或意外受傷時，醫療費用可能是一筆不小的開銷（例如泌尿道阻塞、外傷手術等，
+          單次費用可能達數千至數萬元）。建議平時預留緊急醫療預備金，或考慮投保寵物醫療險。
+        </p>
+        <blockquote>
+          貓咪和人一樣，生病或意外時需要即時就醫。我們希望您在認養前，已經做好「萬一貓咪生病，我願意也有能力負擔醫療費用」的心理與財務準備。
+        </blockquote>
+      </div>
+
+      <div class="notice-item">
+        <div class="eyebrow">長期飼養準備</div>
+        <h3>認養是一段十幾年的承諾</h3>
+        <p>
+          貓咪的平均壽命約為 12～18 年，甚至更長。認養前建議認真想想未來的生活規劃
+          （搬家、出國、結婚生子、工作異動等）是否仍能持續照顧貓咪。
+        </p>
+        <blockquote>
+          認養不只是一時的心動，而是一段長期的陪伴承諾。在您決定認養前，請認真想想未來十幾年的生活規劃，是否都能持續給貓咪一個穩定的家。
+        </blockquote>
+      </div>
+
+      <div class="notice-item">
+        <div class="eyebrow">貓咪常見行為</div>
+        <h3>磨爪、夜間活動、掉毛都是天性</h3>
+        <p>
+          磨爪、半夜活動（俗稱「夜間運動會」）、換毛掉毛都是貓咪的正常天性行為，並非「壞習慣」或健康問題。
+          認養前先了解這些習性，會讓相處更順利、更有心理準備。
+        </p>
+        <blockquote>
+          磨爪是貓咪磨銳爪子、標記地盤的天性，可透過提供合適的貓抓板來引導；夜間活動旺盛、換毛掉毛也都是貓咪常見的自然行為。
+        </blockquote>
+      </div>
+
+      <div class="notice-item">
+        <div class="eyebrow">無法繼續飼養時</div>
+        <h3>請優先聯繫我們，而不是自行轉送或棄養</h3>
+        <p>
+          若因搬家、經濟狀況、健康或其他不可抗力因素導致無法繼續飼養，請優先聯繫原認養單位，
+          協助評估後續轉介或安置，而非自行棄養或私下轉送給不確定背景的第三人。
+        </p>
+        <blockquote>
+          我們理解人生難免有無法預期的變化。若您日後因故無法繼續飼養貓咪，請務必優先聯繫我們，讓我們協助評估後續安置或轉介，共同確保貓咪能持續獲得妥善的照顧。
+        </blockquote>
+      </div>
+
+    </div>
+
+    <h2 class="section-title">貓咪目前照護狀況</h2>
+
+    <div class="notice-card">
+      <div class="notice-item">
+        <div class="eyebrow">照護紀錄</div>
+        <h3>Momo</h3>
+        <ol class="care-list">
+          <li>7/10 做過貓瘟、冠狀病毒、Giardia、白血及愛滋篩檢，除了愛滋外，其餘正常。</li>
+          <li>8/29 觸診、糞便檢查正常，針對偶爾軟便開藥改善。</li>
+        </ol>
+      </div>
+
+      <div class="notice-item">
+        <div class="eyebrow">照護紀錄</div>
+        <h3>六小貓</h3>
+        <ol class="care-list">
+          <li>7/10 做過貓瘟、冠狀病毒及 Giardia 篩檢，皆正常。</li>
+          <li>8/30 做過白血、愛滋及冠狀病毒篩檢，皆正常。</li>
+          <li>8/30 皆完成第一劑三合一疫苗。</li>
+          <li>等貓咪體重超過 1.25 kg（約 9 月第一週）再點除蟲藥。</li>
+        </ol>
+      </div>
+
+      <div class="notice-item">
+        <div class="eyebrow">後續醫療安排</div>
+        <h3>絕育安排</h3>
+        <ol class="care-list">
+          <li>momo 還在哺乳，須等小貓斷奶後才可進行手術。</li>
+          <li>小貓們年齡太小，須等發育完全才可絕育（女生 6 個月大，男生 8～10 個月大即可）。</li>
+        </ol>
+        <blockquote>
+          希望新爸媽能承諾在適合的時機帶他們完成絕育手術，用行動保護他們的身體與長期健康。
+        </blockquote>
+      </div>
+
+      <div class="notice-item">
+        <div class="eyebrow">認養安排</div>
+        <h3>送養順序</h3>
+        <ol class="care-list">
+          <li>欲領養「母貓＋小貓」者為第一優先。</li>
+          <li>欲領養「小貓＋小貓」者為第二順位。</li>
+          <li>欲領養「一隻小貓」者為第三順位。</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="cta">
+      <p class="lead">了解須知後，準備好認識Momo一家了嗎？</p>
+      <a class="btn" href="#" target="_blank" rel="noopener">立即填寫認養問卷</a>
+    </div>
+
+  </div><!-- /#tab-notice -->
+
+  <footer>
+    有任何疑問，歡迎透過 LINE 或 Email 與志工聯繫 · 感謝你願意花時間認識Momo一家
+  </footer>
+
+</div>
+
+<script>
+  function switchTab(name, btn){
+    document.querySelectorAll('.tab-panel').forEach(function(p){ p.classList.remove('active'); });
+    document.querySelectorAll('.tab-btn').forEach(function(b){ b.classList.remove('active'); });
+    document.getElementById('tab-' + name).classList.add('active');
+    btn.classList.add('active');
+  }
+
+  // 七隻貓咪的資料，順序需與 .g-slide 的順序一致
+  var catData = [
+    { no: "NO. 0210", name: "momo", sub: "耳朵有聰明毛的稀有貓咪",
+      desc: "以前生活在MTK草叢裡，愛吃，有時候話很多，相處久了就可以放下戒心被摸摸的貓咪，一隻貓把六寶養得肥嘟嘟，超級厲害！",
+      stampText: "送養中", stampClass: "" },
+    { no: "NO. 0211", name: "小橘", sub: "肉感系男子",
+      desc: "愛吃三人組成員，自信爆滿，尾巴末端有一點點麒麟尾，是好運的象徵！",
+      stampText: "送養中", stampClass: "" },
+    { no: "NO. 0212", name: "小藍", sub: "搗蛋系男子",
+      desc: "愛吃三人組成員，最喜歡爬爬跟鏟屎時在旁邊搗蛋。",
+      stampText: "送養中", stampClass: "" },
+    { no: "NO. 0213", name: "小黃", sub: "撒嬌系男子",
+      desc: "愛吃三人組大哥，體重最重，最喜歡頭頭被摸摸了。",
+      stampText: "面談中", stampClass: "pending" },
+    { no: "NO. 0214", name: "小綠", sub: "膽大系女子",
+      desc: "膽子最大，總是衝第一，喜歡睡成鹽烤吳郭魚的樣子。",
+      stampText: "送養中", stampClass: "" },
+    { no: "NO. 0215", name: "小紫", sub: "文藝系女子",
+      desc: "小名點點，毛色淡有潑墨之感，偶爾一隻貓獨睡，有自己的小世界。",
+      stampText: "送養中", stampClass: "" },
+    { no: "NO. 0216", name: "小紅", sub: "萌萌系女子",
+      desc: "體型最嬌小可愛，條紋分明像小花栗鼠般古靈精怪。",
+      stampText: "送養中", stampClass: "" }
+  ];
+
+  function slideGallery(dir){
+    var el = document.getElementById('cat-gallery');
+    if(!el) return;
+    el.scrollBy({ left: dir * el.clientWidth, behavior: 'smooth' });
+  }
+
+  function updateCatInfo(index){
+    var d = catData[index];
+    if(!d) return;
+    document.getElementById('gallery-no').textContent = d.no;
+    document.getElementById('info-name').textContent = d.name;
+    document.getElementById('info-sub').textContent = d.sub;
+    document.getElementById('info-desc').textContent = d.desc;
+    var stampEl = document.getElementById('info-stamp');
+    stampEl.textContent = d.stampText;
+    stampEl.className = 'stamp' + (d.stampClass ? ' ' + d.stampClass : '');
+  }
+
+  (function(){
+    var gallery = document.getElementById('cat-gallery');
+    var dotsWrap = document.getElementById('gallery-dots');
+    if(!gallery || !dotsWrap) return;
+    var dots = dotsWrap.querySelectorAll('.dot');
+    gallery.addEventListener('scroll', function(){
+      var index = Math.round(gallery.scrollLeft / gallery.clientWidth);
+      dots.forEach(function(d, i){ d.classList.toggle('active', i === index); });
+      updateCatInfo(index);
+    });
+  })();
+</script>
+
+</body>
+</html>
+
