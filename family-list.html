@@ -178,6 +178,7 @@
     display:flex;
     aspect-ratio: 4/3;
     overflow-x:auto;
+    overflow-y:hidden;
     scroll-snap-type: x mandatory;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
@@ -186,13 +187,18 @@
   .gallery-slider::-webkit-scrollbar{ display:none; }
   .g-slide{
     flex: 0 0 100%;
+    width:100%;
+    min-width:100%;
     scroll-snap-align: start;
     height: 100%;
+    overflow:hidden;
   }
   .g-slide img{
     width:100%; height:100%;
     object-fit: cover;
     display:block;
+    backface-visibility:hidden;
+    transform:translateZ(0);
   }
   .g-slide:not(:first-child) img{
     object-fit: contain;
@@ -259,17 +265,6 @@
 <body>
 
 <div class="wrap">
-
-  <div class="howto">
-    <b>使用說明（正式上線前請刪除本區塊）：</b><br>
-    1. 現在是<b>一個大相簿</b>顯示七隻貓咪的照片（各用 main.JPEG），手機上用手指滑動、桌機點擊左右箭頭切換；下方小圓點標示目前第幾張。<br>
-    2. 滑到哪一張，<b>下方簡介卡片會自動換成對應貓咪的資料</b>（姓名、花色/性別/月齡、介紹文字、送養狀態），這是靠 <code>&lt;script&gt;</code> 裡的 <code>catData</code> 陣列驅動的，7 筆資料的順序要跟 <code>.g-slide</code> 圖片的順序一致。<br>
-    3. 圖片路徑已依你提供的檔名寫好（<code>images/momo_main.JPEG</code>、<code>images/cat1_main.JPEG</code>…以此類推），只要把檔案放進 <code>images</code> 子資料夾即可，不用再改路徑。<br>
-    4. 若要增減貓咪：同時要（a）在 <code>.gallery-slider</code> 內增減一個 <code>&lt;div class="g-slide"&gt;</code>、（b）在 <code>.slider-dots</code> 內增減一個 <code>&lt;span class="dot"&gt;&lt;/span&gt;</code>、（c）在 JS 的 <code>catData</code> 陣列裡對應增減一筆資料，三處必須同步，順序也要一致。<br>
-    5. 狀態標籤 <code>stampClass</code> 可填 <code>""</code>（送養中，預設樣式）／<code>"pending"</code>（面談中）／<code>"adopted"</code>（已認養）。<br>
-    6. 最下方 CTA 按鈕的 <code>href="#"</code> 請換成你的 Google 表單連結（共兩處，「七隻貓咪介紹」與「認養須知」頁籤底部各一個）。<br>
-    7. 上方「七隻貓咪介紹／認養須知」兩個頁籤切換邏輯已寫好，不需額外套件。
-  </div>
 
   <div class="page-head">
     <div class="eyebrow">認養檔案 · 一家七口</div>
